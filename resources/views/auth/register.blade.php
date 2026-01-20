@@ -8,7 +8,7 @@
         </div>
 
         <div class="card-body">
-            <form action="{{ route('store.post') }}" method="POST">
+            <form action="{{ route('register.post') }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="fname" class="form-label">First Name</label>

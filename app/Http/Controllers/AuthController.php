@@ -53,9 +53,37 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('index')->with('success', 'Booking sucessfuly, please login');
+        return redirect()->route('login')->with('success', 'Booking sucessfuly, please login');
 
     }
+
+    public  function login(Request $request){
+        $credentials = $request->validate([
+            'username'=>'required',
+            'password'=>'required|string',
+
+        ]);
+
+        if(!Auth::attempt($credentials))
+            {
+                return back()->with('error','Invalid credentails');
+            }
+            $user = User::where('username', $credentials['username'])->first();
+
+            if($user->isAdmin()){
+                return redirect()->route('admin_dashbord');
+            }
+            if($user->isDoctor()){
+                return redirect()->route('doctor_dashbord');
+            }
+            elseif($user->isPatient()){
+                return redirect()->route('patient_dashbord');
+            }
+
+            return redirect()->route('register')->with('error', 'account doesnt exist');
+    }
+
+
 
     /**
      * Display the specified resource.
@@ -87,5 +115,12 @@ class AuthController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login')->with('sucess','Logout');
     }
 }
