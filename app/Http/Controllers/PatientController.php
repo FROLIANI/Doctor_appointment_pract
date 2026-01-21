@@ -3,14 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
+
+public function _construct(){
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+         if(!Auth::user()->isPatient()){
+        abort(403, 'admin only');
+        };
+
     return view('patient.index');
     }
 

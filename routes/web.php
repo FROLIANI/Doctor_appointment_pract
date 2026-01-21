@@ -18,6 +18,21 @@ Route::get('/login',[AuthController::class,'index'])->name('login');
 Route::post('/login',[AuthController::class,'login'])->name('login.post');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
+
+
+Route::middleware(['auth'])->group(function(){
+    
+//For admin
 Route::get('/admin_dashbord',[AdminController::class,'index'])->name('admin_dashbord');
+Route::get('/add_doctor',[AdminController::class,'create'])->name('add_doctor');
+Route::post('/add_doctor',[AdminController::class,'store'])->name('admin.doctor.store');
+
+//For Doctor
 Route::get('/doctor_dashbord',[DoctorController::class,'index'])->name('doctor_dashbord');
+
+//For Patient
 Route::get('/patient_dashbord',[PatientController::class,'index'])->name('patient_dashbord');
+
+});
+
+

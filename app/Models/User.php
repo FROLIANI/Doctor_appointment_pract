@@ -55,18 +55,23 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
- public function isAdmin()   {
-     return $this->role_id === Role::ADMIN;
-     }
+    public function isAdmin()
+    {
+        return $this->role_id === Role::ADMIN;
+    }
 
-public function isDoctor()  {
-     return $this->role_id === Role::DOCTOR;
-     }
+    public function isDoctor()
+    {
+        return $this->role_id === Role::DOCTOR;
+    }
 
-public function isPatient() {
-     return $this->role_id === Role::PATIENT;
-     }
+    public function isPatient()
+    {
+        return $this->role_id === Role::PATIENT;
+    }
 
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
 }
-
-
