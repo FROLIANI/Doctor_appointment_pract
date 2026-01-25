@@ -11,7 +11,9 @@
             <button type="submit" class="btn btn-danger">Logout</button>
         </form>
 
-        <a href="{{ route('add_doctor') }}">Add Doctor</a>
+        <a class="gap-2" href="{{ route('add_doctor') }}">Add Doctor</a>
+        <a href="{{ route('all_doctors') }}">All Doctors</a>
+        <a href="{{ route('all_patients') }}">All Patients</a>
     </div>
 
     <h5>All Users</h5>
@@ -56,5 +58,38 @@
             </tboday>
 
         </thead>
+    </table>
+
+    <h5>All Appointments made</h5>
+    <table class="w-full border border-gray-300 mt-4">
+        <thead class="bg-gray-800 text-white">
+            <tr class="border-b">
+                <td>Appointment Id</td>
+                <td>Patient Id</td>
+                <td>Doctor Id</td>
+                <td>Appointment Date</td>
+                <td>Appointment Time</td>
+                <td>Status</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse ($appointments as $appointment)
+                <tr>
+                    <td>{{ $appointment->id }}</td>
+                    <td>{{ $appointment->patient_id }}</td>
+                    <td>{{ $appointment->doctor_id }}</td>
+                    <td>{{ $appointment->appointment_date }}</td>
+                    <td>{{ $appointment->appointment_time }}</td>
+                    <td>{{ $appointment->status }}</td>
+                </tr>
+
+            @empty
+                <tr>
+                    <td>No appointments Found</td>
+                </tr>
+            @endforelse
+        </tbody>
+
     </table>
 @endsection

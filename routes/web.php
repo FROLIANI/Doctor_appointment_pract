@@ -26,6 +26,13 @@ Route::middleware(['auth'])->group(function(){
 Route::get('/admin_dashbord',[AdminController::class,'index'])->name('admin_dashbord');
 Route::get('/add_doctor',[AdminController::class,'create'])->name('add_doctor');
 Route::post('/add_doctor',[AdminController::class,'store'])->name('admin.doctor.store');
+Route::get('/all_doctors',[AdminController::class,'show_doctors'])->name('all_doctors');
+Route::get('/all_patients',[AdminController::class,'show_patients'])->name('all_patients');
+
+Route::get('/view_doctor/{doctor}',[AdminController::class,'show'])->name('view_doctor');
+Route::get('/edit_doctor/{doctor}',[AdminController::class,'edit'])->name('edit_doctor');
+Route::put('/update_doctor/{doctor}',[AdminController::class,'update'])->name('admin.doctor.update');
+Route::delete('/delete_doctor/{doctor}',[AdminController::class,'destroy'])->name('admin.doctor.destroy');
 
 //For Doctor
 Route::get('/doctor_dashbord',[DoctorController::class,'index'])->name('doctor_dashbord');
