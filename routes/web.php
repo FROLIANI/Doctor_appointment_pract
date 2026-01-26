@@ -33,9 +33,17 @@ Route::get('/view_doctor/{doctor}',[AdminController::class,'show'])->name('view_
 Route::get('/edit_doctor/{doctor}',[AdminController::class,'edit'])->name('edit_doctor');
 Route::put('/update_doctor/{doctor}',[AdminController::class,'update'])->name('admin.doctor.update');
 Route::delete('/delete_doctor/{doctor}',[AdminController::class,'destroy'])->name('admin.doctor.destroy');
+Route::get('/view_patient/{user}',[AdminController::class,'view_patient'])->name('view_patient');
+Route::delete('/delete_patient/{user}',[AdminController::class,'destroy_patient'])->name('admin.patient.destroy_patient');
 
 //For Doctor
 Route::get('/doctor_dashbord',[DoctorController::class,'index'])->name('doctor_dashbord');
+Route::post('/doctor/appointments/{appointment}/approve', [DoctorController::class, 'approve'])
+    ->name('doctor.appointment.approve');
+
+Route::post('/doctor/appointments/{appointment}/cancel', [DoctorController::class, 'cancel'])
+    ->name('doctor.appointment.cancel');
+
 
 
 //For Patient

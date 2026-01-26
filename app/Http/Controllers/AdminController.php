@@ -49,7 +49,7 @@ class AdminController extends Controller
             abort(403, 'admin only');
         }
         $users = User::where('role_id', Role::PATIENT)->latest()->get();
-        return view('admin.all_patients');
+        return view('admin.all_patients',compact('users'));
     }
 
 
@@ -194,6 +194,27 @@ class AdminController extends Controller
         return redirect()
         ->route('all_doctors')
         ->with('success', 'Doctor deleted successfully');
+
+    }
+
+    public function view_patient(string $id){
+        if(!Auth::user()->isAdmin()){
+            abort(403,'Admin only');
+        }
+
+        $user = User::findOrFail($id);
+        return view('admin.view_patient',compact('user'));
+    }
+
+    public function destroy_patient(string $id){
+         if(!Auth::user()->isAdmin()){
+            abort(403,'Admin only');
+        }
+
+        $user = User::where('id',$id)->where('role_id',Role::PATIENT)->findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('all_patients')->with('message','Deleted sucesssful');
 
     }
 }

@@ -4,7 +4,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title">Make appointment</h5>
+            <h5 class="card-title">Register Details</h5>
         </div>
 
         <div class="card-body">
@@ -41,6 +41,8 @@
                 </div>
 
                 <button type="submit">Book Now</button>
+
+                <a href="{{ route('home') }}">⬅️Back Home</a>
 
             </form>
         </div>

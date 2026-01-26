@@ -23,6 +23,8 @@
 
                 <button type="submit">Login Now</button>
 
+                <a href="{{ route('home') }}">⬅️Back Home</a>
+
             </form>
         </div>
     </div>
