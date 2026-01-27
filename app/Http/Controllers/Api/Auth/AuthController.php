@@ -45,4 +45,41 @@ class AuthController extends Controller
             ],
         ], 201);
     }
+
+    public function login(Request $request)
+{
+    $data = $request->validate([
+        'username' => ['required', 'string'],
+        'password' => ['required', 'string'],
+    ]);
+
+    $user = User::where('username', $data['username'])->first();
+
+    if (!$user || !Hash::check($data['password'], $user->password)) {
+        return response()->json([
+            'status'  => false,
+            'code'    => 401,
+            'message' => 'Invalid credentials',
+        ], 401);
+    }
+
+    $user->tokens()->delete();
+
+    $token = $user->createToken('api-token')->plainTextToken;
+
+    return response()->json([
+        'status'  => true,
+        'code'    => 200,
+        'message' => 'Login successful',
+        'token'   => $token,
+        'token_type' => 'Bearer',
+        'user'    => [
+            'id'       => $user->id,
+            'username' => $user->username,
+            'email'    => $user->email,
+            'role_id'  => $user->role_id,
+        ],
+    ], 200);
+}
+
 }
