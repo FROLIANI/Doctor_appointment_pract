@@ -43,7 +43,7 @@ class DoctorController extends Controller
 
         return back()->with('success', 'Appointment approved');
     }
-    
+
 
     public function cancel(Appointment $appointment)
     {
@@ -85,24 +85,67 @@ class DoctorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
+   public function edit(string $id)
+{
+    if (!Auth::user()->isPatient()) abort(403, 'patient only');
+
+    $appointment = Appointment::with('doctor.user')
+        ->where('patient_id', Auth::id())
+        ->findOrFail($id);
+
+    if ($appointment->status !== 'Pending') {
+        return back()->with('error', 'You can only edit pending appointments.');
     }
+
+    return view('patient.edit_appointment', compact('appointment'));
+}
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+   public function update(Request $request, string $id)
+{
+    if (!Auth::user()->isPatient()) abort(403, 'patient only');
+
+    $appointment = Appointment::where('patient_id', Auth::id())->findOrFail($id);
+
+    if ($appointment->status !== 'Pending') {
+        return back()->with('error', 'You can only update pending appointments.');
     }
 
+    $data = $request->validate([
+        'appointment_date' => 'required|date|after_or_equal:today',
+        'appointment_time' => 'required',
+    ]);
+
+    $appointment->update([
+        'appointment_date' => $data['appointment_date'],
+        'appointment_time' => $data['appointment_time'],
+    ]);
+
+    return redirect()->route('patient_dashbord')->with('message', 'Appointment updated successfully.');
+}
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+   public function destroy(string $id)
+{
+    if (!Auth::user()->isPatient()) {
+        abort(403, 'patient only');
     }
+
+    $appointment = Appointment::where('patient_id', Auth::id())
+        ->findOrFail($id);
+
+    if ($appointment->status !== 'Pending') {
+        return back()->with('error', 'You can only cancel pending appointments.');
+    }
+
+    $appointment->delete();
+
+    return redirect()
+        ->route('patient_dashbord')
+        ->with('message', 'Appointment cancelled successfully.');
+}
 }
