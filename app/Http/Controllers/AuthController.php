@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use  Illuminate\Support\Facades\Auth;
 use  Illuminate\Support\Facades\Hash;
+use  Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -113,7 +115,7 @@ class AuthController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     */ 
+     */
     public function destroy(string $id)
     {
         //
@@ -126,4 +128,62 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('login')->with('sucess','Logout');
     }
+
+    //Forgot password
+    public function forgotPassword(Request $request):RedirectResponse
+    {
+        try{
+            $request->validate([
+                'email'=>'required|email|exists:users,email',
+            ]);
+
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+            if($status === Password::RESET_LINK_SENT){
+                return back()->with('success',__($status));
+            }
+
+        }
+        catch(\Throwable $e){
+            return back()->with('error','Something went wrong,please try again');
+        }
+    }
+
+    public function resetPassword(Request $request):RedirectResponse
+    {
+        try{
+            $request->validate([
+                'token'=>'required',
+                'email'=>'required|email',
+                'password'=>'required|string|confirmed|min:6'
+            ]);
+
+            $status = Password::reset(
+                $request->only('email','password_confirmation','token'),
+                function($user, $password){
+                    $user->password = Hash::make($password);
+                    $user->setRememberToken(Str::random(60));
+                    $user->save();
+                }
+            );
+
+            if($status === Password::PASSWORD_RESET){
+                return redirect()->route('login')->with('sucess','Password recet sucessful');
+            }
+
+            return back()->with('error',__($status));
+
+        }
+        catch(\Throwable $e){
+            return back()->with('error','Failed to reset password');
+        }
+    }
+
+    public function showResetForm(string $token)
+{
+    return view('auth.reset-password', [
+        'token' => $token
+    ]);
+}
 }
