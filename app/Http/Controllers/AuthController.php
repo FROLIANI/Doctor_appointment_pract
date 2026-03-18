@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use  Illuminate\Support\Facades\Auth;
 use  Illuminate\Support\Facades\Hash;
 
@@ -29,7 +30,7 @@ class AuthController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request):RedirectResponse
     {
         $data = $request->validate([
             'first_name' => 'required|string',
@@ -57,14 +58,15 @@ class AuthController extends Controller
 
     }
 
-    public  function login(Request $request){
+    public  function login(Request $request): RedirectResponse
+    {
         $credentials = $request->validate([
             'username'=>'required',
             'password'=>'required|string',
 
         ]);
 
-        if(!Auth::attempt($credentials))
+        if(!Auth::attempt($credentials, $request->boolean('remember')))
             {
                 return back()->with('error','Invalid credentails');
             }
@@ -104,20 +106,21 @@ class AuthController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id):RedirectResponse
     {
         //
     }
 
     /**
      * Remove the specified resource from storage.
-     */
+     */ 
     public function destroy(string $id)
     {
         //
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request):RedirectResponse
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
@@ -104,7 +105,7 @@ class DoctorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, string $id)
+   public function update(Request $request, string $id):RedirectResponse
 {
     if (!Auth::user()->isPatient()) abort(403, 'patient only');
 
